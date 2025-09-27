@@ -1,0 +1,18 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/status": {
+            "get": {
+                "responses": {}
+            }
+        },
+        "/v1/users": {
+            "post": {
+                "responses": {}
+            }
+        }
+    }
+}
