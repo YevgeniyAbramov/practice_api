@@ -11,6 +11,18 @@ definitions:
         example: johndoe
         type: string
     type: object
+  models.UpdateUserRequest:
+    properties:
+      first_name:
+        example: John
+        type: string
+      last_name:
+        example: Doe
+        type: string
+      login:
+        example: johndoe
+        type: string
+    type: object
   models.User:
     properties:
       created_at:
@@ -115,6 +127,66 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Создать пользователя
+      tags:
+      - users
+  /v1/users/soft-delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Помечает пользователя как удаленого
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Удалить пользователя
+      tags:
+      - users
+  /v1/users/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Данные пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Обновить пользователя
       tags:
       - users
 swagger: "2.0"

@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // User пользователь системы
 //
@@ -20,4 +23,27 @@ type CreateUserRequest struct {
 	Login     string  `json:"login" example:"johndoe"`
 	FirstName *string `json:"first_name,omitempty" example:"John"`
 	LastName  *string `json:"last_name,omitempty" example:"Doe"`
+}
+
+// CreateUserRequest тело запроса на создание пользователя
+type UpdateUserRequest struct {
+	Login     string `json:"login" example:"johndoe"`
+	FirstName string `json:"first_name,omitempty" example:"John"`
+	LastName  string `json:"last_name,omitempty" example:"Doe"`
+}
+
+func (u *UpdateUserRequest) Validate() error {
+	if u.Login == "" {
+		return fmt.Errorf("login is required")
+	}
+
+	if u.FirstName == "" {
+		return fmt.Errorf("first name is required")
+	}
+
+	if u.LastName == "" {
+		return fmt.Errorf("last name is required")
+	}
+
+	return nil
 }
