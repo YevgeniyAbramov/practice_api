@@ -1,15 +1,15 @@
 package database
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jmoiron/sqlx"
 )
 
-var DB *pgxpool.Pool
+var DB *sqlx.DB
 
 func ConnectDB() {
 	url := fmt.Sprintf(
@@ -21,13 +21,9 @@ func ConnectDB() {
 		os.Getenv("DB_NAME"),
 	)
 
-	pool, err := pgxpool.New(context.Background(), url)
+	pool, err := sqlx.Connect("pgx", url)
 	if err != nil {
 		log.Fatal("Unable to connect to database: ", err)
-	}
-
-	if err := pool.Ping(context.Background()); err != nil {
-		log.Fatal("Database ping failed: ", err)
 	}
 
 	DB = pool

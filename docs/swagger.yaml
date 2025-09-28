@@ -1,10 +1,120 @@
+definitions:
+  models.CreateUserRequest:
+    properties:
+      first_name:
+        example: John
+        type: string
+      last_name:
+        example: Doe
+        type: string
+      login:
+        example: johndoe
+        type: string
+    type: object
+  models.User:
+    properties:
+      created_at:
+        description: Дата создания
+        type: string
+      deleted_at:
+        description: Дата удаления (если есть)
+        type: string
+      first_name:
+        description: Имя пользователя
+        type: string
+      id:
+        description: ID пользователя
+        type: integer
+      last_name:
+        description: Фамилия пользователя
+        type: string
+      login:
+        description: Логин пользователя
+        type: string
+      updated_at:
+        description: Дата обновления
+        type: string
+    type: object
+  response.APIResponse:
+    properties:
+      message:
+        example: ok
+        type: string
+      result: {}
+      status:
+        example: true
+        type: boolean
+    type: object
+  response.ErrorResponse:
+    properties:
+      message:
+        example: something went wrong
+        type: string
+      status:
+        example: false
+        type: boolean
+    type: object
 info:
   contact: {}
 paths:
   /status:
     get:
+      description: Проверяет статус API
       responses: {}
+      tags:
+      - check status
   /v1/users:
+    get:
+      description: Получает список всех пользователей
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.APIResponse'
+            - properties:
+                result:
+                  items:
+                    $ref: '#/definitions/models.User'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Получить пользователей
+      tags:
+      - users
     post:
-      responses: {}
+      consumes:
+      - application/json
+      description: Создает нового пользователя
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/models.User'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Создать пользователя
+      tags:
+      - users
 swagger: "2.0"

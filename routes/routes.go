@@ -20,7 +20,7 @@ func Routes(app *fiber.App) {
 	// API v1
 	user := v1.Group("/users")
 	{
-		// user.Get("/:id", handlers.GetUser)
+		user.Get("/", handlers.GetUsers)
 		user.Post("/", handlers.CreateUser)
 	}
 }
