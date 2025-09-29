@@ -24,5 +24,6 @@ func Routes(app *fiber.App) {
 		user.Post("/", handlers.CreateUser)
 		user.Put("/update/:id", handlers.UpdateUser)
 		user.Delete("/soft-delete/:id", handlers.SoftDeleteUser)
+		user.Patch("/restore/:id", handlers.RestoreUser)
 	}
 }

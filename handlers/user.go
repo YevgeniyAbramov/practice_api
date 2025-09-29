@@ -182,3 +182,44 @@ func SoftDeleteUser(c *fiber.Ctx) error {
 	})
 
 }
+
+// RestoreUser godoc
+// @Summary Восстановить пользователя
+// @Description Восстанавливает пользователя
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "ID пользователя"
+// @Success 200 {object} response.APIResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /v1/users/restore/{id} [patch]
+func RestoreUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Status(400).JSON(response.ErrorResponse{
+			Status:  false,
+			Message: "user id is required",
+		})
+	}
+	userId, err := strconv.Atoi(id)
+	if err != nil {
+		return c.Status(400).JSON(response.ErrorResponse{
+			Status:  false,
+			Message: err.Error(),
+		})
+	}
+
+	err = database.RestoreUser(userId)
+	if err != nil {
+		return c.Status(500).JSON(response.ErrorResponse{
+			Status:  false,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(response.APIResponse{
+		Status:  true,
+		Message: "ok",
+	})
+
+}

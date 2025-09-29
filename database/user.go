@@ -70,3 +70,25 @@ func SoftDeleteUser(id int) error {
 
 	return nil
 }
+
+func RestoreUser(userId int) error {
+	query := `
+		UPDATE auth.users
+		SET deleted_at = NULL
+		WHERE id = $1`
+
+	rows, err := DB.Exec(query, userId)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := rows.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("no user found with id %d or user is soft-deleted", userId)
+	}
+	return nil
+}

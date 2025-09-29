@@ -129,6 +129,31 @@ paths:
       summary: Создать пользователя
       tags:
       - users
+  /v1/users/restore/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Восстанавливает пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Восстановить пользователя
+      tags:
+      - users
   /v1/users/soft-delete/{id}:
     delete:
       consumes:
