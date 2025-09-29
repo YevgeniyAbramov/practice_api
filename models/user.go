@@ -19,6 +19,7 @@ type User struct {
 }
 
 // CreateUserRequest тело запроса на создание пользователя
+// swagger:model CreateUserRequest
 type CreateUserRequest struct {
 	Login     string  `json:"login" example:"johndoe"`
 	FirstName *string `json:"first_name,omitempty" example:"John"`

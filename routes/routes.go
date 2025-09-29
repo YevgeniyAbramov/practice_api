@@ -26,4 +26,9 @@ func Routes(app *fiber.App) {
 		user.Delete("/soft-delete/:id", handlers.SoftDeleteUser)
 		user.Patch("/restore/:id", handlers.RestoreUser)
 	}
+
+	todo := v1.Group("/todo")
+	{
+		todo.Post("/create", handlers.CreateToDo)
+	}
 }

@@ -1,4 +1,16 @@
 definitions:
+  models.CreateToDoReq:
+    properties:
+      description:
+        description: Описание задачи
+        type: string
+      name:
+        description: Название задачи
+        type: string
+      user_id:
+        description: ID пользователя задачи
+        type: integer
+    type: object
   models.CreateUserRequest:
     properties:
       first_name:
@@ -11,6 +23,43 @@ definitions:
         example: johndoe
         type: string
     type: object
+  models.ToDo:
+    properties:
+      created_at:
+        description: Дата создания
+        type: string
+      deleted_at:
+        description: Дата удаления (если есть)
+        type: string
+      description:
+        description: Описание задачи
+        type: string
+      id:
+        type: integer
+      name:
+        description: Название задачи
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/models.TodoStatus'
+        description: Статус
+      updated_at:
+        description: Дата обновления
+        type: string
+      user_id:
+        description: ID пользователя задачи
+        type: integer
+    type: object
+  models.TodoStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - StatusNew
+    - StatusInProgress
+    - StatusDone
   models.UpdateUserRequest:
     properties:
       first_name:
@@ -75,6 +124,37 @@ paths:
       responses: {}
       tags:
       - check status
+  /v1/todo/create:
+    post:
+      consumes:
+      - application/json
+      description: Создает новую задачу
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateToDoReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/models.ToDo'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Создать задачу
+      tags:
+      - ToDo
   /v1/users:
     get:
       description: Получает список всех пользователей

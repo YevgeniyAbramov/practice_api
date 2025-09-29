@@ -13,6 +13,58 @@
                 "responses": {}
             }
         },
+        "/v1/todo/create": {
+            "post": {
+                "description": "Создает новую задачу",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ToDo"
+                ],
+                "summary": "Создать задачу",
+                "parameters": [
+                    {
+                        "description": "Данные пользователя",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateToDoReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/models.ToDo"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users": {
             "get": {
                 "description": "Получает список всех пользователей",
@@ -235,6 +287,23 @@
         }
     },
     "definitions": {
+        "models.CreateToDoReq": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "Описание задачи",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Название задачи",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "ID пользователя задачи",
+                    "type": "integer"
+                }
+            }
+        },
         "models.CreateUserRequest": {
             "type": "object",
             "properties": {
@@ -251,6 +320,59 @@
                     "example": "johndoe"
                 }
             }
+        },
+        "models.ToDo": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Дата создания",
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "description": "Дата удаления (если есть)",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "Описание задачи",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Название задачи",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Статус",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.TodoStatus"
+                        }
+                    ]
+                },
+                "updated_at": {
+                    "description": "Дата обновления",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "ID пользователя задачи",
+                    "type": "integer"
+                }
+            }
+        },
+        "models.TodoStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "StatusNew",
+                "StatusInProgress",
+                "StatusDone"
+            ]
         },
         "models.UpdateUserRequest": {
             "type": "object",
