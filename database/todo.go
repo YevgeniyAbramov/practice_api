@@ -26,3 +26,15 @@ func CreateToDo(todo *models.CreateToDoReq) (*models.ToDo, error) {
 
 	return &newToDo, nil
 }
+
+func GetToDo(userID int) ([]models.ToDo, error) {
+	query := `SELECT * FROM auth.todos WHERE user_id = $1`
+
+	var todos []models.ToDo
+	err := DB.Select(&todos, query, userID)
+	if err != nil {
+		return todos, err
+	}
+
+	return todos, nil
+}

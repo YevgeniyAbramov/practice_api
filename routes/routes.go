@@ -30,5 +30,7 @@ func Routes(app *fiber.App) {
 	todo := v1.Group("/todo")
 	{
 		todo.Post("/create", handlers.CreateToDo)
+		todo.Get("/get/:id", handlers.GetToDo)
+		todo.Put("/update/:id")
 	}
 }
