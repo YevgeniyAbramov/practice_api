@@ -135,6 +135,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/todo/update/{id}": {
+            "put": {
+                "description": "Обновляет задачу",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ToDo"
+                ],
+                "summary": "Обновить задачу",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID задачи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Данные пользователя",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateToDoReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users": {
             "get": {
                 "description": "Получает список всех пользователей",
@@ -443,6 +496,27 @@ const docTemplate = `{
                 "StatusInProgress",
                 "StatusDone"
             ]
+        },
+        "models.UpdateToDoReq": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "Описание задачи",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Название задачи",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Статус",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.TodoStatus"
+                        }
+                    ]
+                }
+            }
         },
         "models.UpdateUserRequest": {
             "type": "object",

@@ -82,3 +82,56 @@ func GetToDo(c *fiber.Ctx) error {
 	})
 
 }
+
+// UpdateToDo godoc
+// @Summary Обновить задачу
+// @Description Обновляет задачу
+// @Tags ToDo
+// @Accept json
+// @Produce json
+// @Param id path int true "ID задачи"
+// @Param user body models.UpdateToDoReq true "Данные пользователя"
+// @Success 200 {object} response.APIResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /v1/todo/update/{id} [put]
+func UpdateToDo(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Status(400).JSON(response.ErrorResponse{
+			Status:  false,
+			Message: "id is required",
+		})
+	}
+
+	toDoID, err := strconv.Atoi(id)
+	if err != nil {
+		return c.Status(400).JSON(response.ErrorResponse{
+			Status:  false,
+			Message: err.Error(),
+		})
+	}
+
+	var req models.UpdateToDoReq
+	err = c.BodyParser(&req)
+	if err != nil {
+		return c.Status(400).JSON(response.ErrorResponse{
+			Status:  false,
+			Message: err.Error(),
+		})
+	}
+
+	resp, err := database.UpdateToDo(toDoID, &req)
+	if err != nil {
+		return c.Status(500).JSON(response.ErrorResponse{
+			Status:  false,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(response.APIResponse{
+		Status:  true,
+		Message: "ok",
+		Result:  resp,
+	})
+}

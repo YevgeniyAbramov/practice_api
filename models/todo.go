@@ -28,3 +28,9 @@ type CreateToDoReq struct {
 	Name        string  `json:"name" db:"name"`                         // Название задачи
 	Description *string `json:"description,omitempty" db:"description"` //Описание задачи
 }
+
+type UpdateToDoReq struct {
+	Name        string      `json:"name" db:"name"`                         // Название задачи
+	Description *string     `json:"description,omitempty" db:"description"` //Описание задачи
+	Status      *TodoStatus `json:"status" db:"status"`                     //Статус
+}

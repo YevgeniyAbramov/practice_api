@@ -60,6 +60,19 @@ definitions:
     - StatusNew
     - StatusInProgress
     - StatusDone
+  models.UpdateToDoReq:
+    properties:
+      description:
+        description: Описание задачи
+        type: string
+      name:
+        description: Название задачи
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/models.TodoStatus'
+        description: Статус
+    type: object
   models.UpdateUserRequest:
     properties:
       first_name:
@@ -189,6 +202,41 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Получить список задач
+      tags:
+      - ToDo
+  /v1/todo/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет задачу
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Данные пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateToDoReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Обновить задачу
       tags:
       - ToDo
   /v1/users:

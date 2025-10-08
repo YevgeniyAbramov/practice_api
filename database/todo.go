@@ -1,6 +1,10 @@
 package database
 
-import "practice_api/models"
+import (
+	"fmt"
+	"practice_api/models"
+	"strings"
+)
 
 func CreateToDo(todo *models.CreateToDoReq) (*models.ToDo, error) {
 	query := `
@@ -28,7 +32,7 @@ func CreateToDo(todo *models.CreateToDoReq) (*models.ToDo, error) {
 }
 
 func GetToDo(userID int) ([]models.ToDo, error) {
-	query := `SELECT * FROM auth.todos WHERE user_id = $1`
+	query := `SELECT * FROM auth.todos WHERE user_id = $1 AND deleted_at IS NULL`
 
 	var todos []models.ToDo
 	err := DB.Select(&todos, query, userID)
@@ -37,4 +41,42 @@ func GetToDo(userID int) ([]models.ToDo, error) {
 	}
 
 	return todos, nil
+}
+
+func UpdateToDo(id int, todo *models.UpdateToDoReq) (*models.ToDo, error) {
+	query := `UPDATE auth.todos SET `
+	args := []interface{}{}
+	i := 1
+
+	if todo.Name != "" {
+		query += fmt.Sprintf("name = $%d", i)
+		args = append(args, todo.Name)
+		i++
+	}
+
+	if todo.Description != nil {
+		query += fmt.Sprintf("description = $%d", i)
+		args = append(args, todo.Description)
+		i++
+	}
+
+	if todo.Status != nil {
+		query += fmt.Sprintf("status = $%d", i)
+		args = append(args, todo.Status)
+		i++
+	}
+
+	query = strings.TrimSuffix(query, ", ")
+	query += fmt.Sprintf(" WHERE id = $%d RETURNING *", i)
+	args = append(args, id)
+
+	var update models.ToDo
+
+	err := DB.QueryRowx(query, args...).StructScan(&update)
+	if err != nil {
+		return nil, err
+	}
+
+	return &update, err
+
 }
